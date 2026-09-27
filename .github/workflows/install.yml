@@ -1,0 +1,30 @@
+name: Validate Homebrew installation
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  install:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-15, macos-15-intel]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Tap and audit UsageBar
+        run: |
+          brew tap icarus2419/usagebar
+          brew audit --cask --online icarus2419/usagebar/usagebar
+          brew livecheck --cask icarus2419/usagebar/usagebar
+
+      - name: Install UsageBar
+        run: |
+          mkdir -p "$RUNNER_TEMP/Applications"
+          brew install --cask --appdir="$RUNNER_TEMP/Applications" icarus2419/usagebar/usagebar
+          APP="$RUNNER_TEMP/Applications/UsageBar.app"
+          test -d "$APP"
+          lipo "$APP/Contents/MacOS/UsageBar" -verify_arch arm64 x86_64
+          codesign --verify --deep --strict "$APP"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP/Contents/Info.plist")" = "$(brew info --cask --json=v2 icarus2419/usagebar/usagebar | ruby -rjson -e 'puts JSON.parse(STDIN.read).fetch("casks").first.fetch("version")')"

@@ -1,14 +1,18 @@
 cask "usagebar" do
-  version "1.0.1"
-  sha256 "8c8d21fe39bfb8a27b281225b36acc7ab851c0fc24959d1f672e44d98d43bc31"
+  version "1.0.2"
+  sha256 "8163da668a15e218eb44c3ed265c00dc95232159b5f186ecbf1ad4fc6f5b2316"
 
   url "https://github.com/icarus2419/UsageBar/releases/download/v#{version}/UsageBar-macos.zip"
   name "UsageBar"
   desc "Monitor Claude and ChatGPT plan usage from the menu bar"
   homepage "https://github.com/icarus2419/UsageBar"
 
-  depends_on arch: :arm64
   depends_on macos: ">= :ventura"
+
+  livecheck do
+    url :url
+    strategy :github_latest
+  end
 
   app "UsageBar.app"
 
