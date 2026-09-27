@@ -7,7 +7,7 @@ cask "usagebar" do
   desc "Monitor Claude and ChatGPT plan usage from the menu bar"
   homepage "https://github.com/icarus2419/UsageBar"
 
-  depends_on macos: ">= :ventura"
+  depends_on macos: :ventura
 
   livecheck do
     url :url
