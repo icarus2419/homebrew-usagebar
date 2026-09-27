@@ -19,9 +19,8 @@ jobs:
     steps:
       - name: Install UsageBar from its full cask name
         run: |
-          mkdir -p "$RUNNER_TEMP/Applications"
-          brew install --cask --appdir="$RUNNER_TEMP/Applications" icarus2419/usagebar/usagebar
-          APP="$RUNNER_TEMP/Applications/UsageBar.app"
+          brew install --cask icarus2419/usagebar/usagebar
+          APP="/Applications/UsageBar.app"
           test -d "$APP"
           lipo "$APP/Contents/MacOS/UsageBar" -verify_arch arm64 x86_64
           codesign --verify --deep --strict "$APP"
@@ -31,3 +30,8 @@ jobs:
         run: |
           brew audit --cask --online icarus2419/usagebar/usagebar
           brew livecheck --cask icarus2419/usagebar/usagebar
+
+      - name: Uninstall UsageBar
+        run: |
+          brew uninstall --cask icarus2419/usagebar/usagebar
+          test ! -e /Applications/UsageBar.app
